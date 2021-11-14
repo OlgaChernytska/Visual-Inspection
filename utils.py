@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import SubsetRandomSampler, DataLoader
 from torchvision import transforms, datasets, models
 from sklearn.model_selection import train_test_split
@@ -42,8 +43,14 @@ def get_train_test_loaders(
 
 
 class CustomVGG(nn.Module):
+    """
+    Returns class scores when in train mode.
+    Returns class probs and feature maps when in eval mode.
+    """
+
     def __init__(self, input_size):
         super(CustomVGG, self).__init__()
+        self.input_size = input_size
         self.feature_extractor = models.vgg16(pretrained=True).features[:-1]
         self.classification_head = nn.Sequential(
             nn.MaxPool2d(kernel_size=2, stride=2),
@@ -64,8 +71,25 @@ class CustomVGG(nn.Module):
     def forward(self, x):
         feature_maps = self.feature_extractor(x)
         scores = self.classification_head(feature_maps)
-        probs = nn.functional.softmax(scores, dim=-1)
-        return scores, probs, feature_maps
+
+        if self.training:
+            return scores
+
+        else:
+            probs = nn.functional.softmax(scores, dim=-1)
+
+            weights = self.classification_head[3].weight
+            weights = (
+                weights.unsqueeze(-1)
+                .unsqueeze(-1)
+                .unsqueeze(0)
+                .repeat((10, 1, 1, 14, 14))
+            )
+            feature_maps = feature_maps.unsqueeze(1).repeat((1, 2, 1, 1, 1))
+            location = torch.mul(weights, feature_maps).sum(axis=2)
+            location = F.interpolate(location, size=self.input_size, mode="bilinear")
+
+            return probs, location
     
     
 def train(dataloader, model, optimizer, criterion, epochs, device):
@@ -83,7 +107,7 @@ def train(dataloader, model, optimizer, criterion, epochs, device):
             labels = labels.to(device)
 
             optimizer.zero_grad()
-            preds_scores = model(inputs)[0]
+            preds_scores = model(inputs)
             preds_class = torch.argmax(preds_scores, dim=-1)
             loss = criterion(preds_scores, labels)
             loss.backward()
@@ -113,8 +137,8 @@ def evaluate(model, dataloader, device):
         inputs = inputs.to(device)
         labels = labels.to(device)
 
-        preds_scores = model(inputs)[0]
-        preds_class = torch.argmax(preds_scores, dim=-1)
+        preds_probs = model(inputs)[0]
+        preds_class = torch.argmax(preds_probs, dim=-1)
 
         labels = labels.cpu().numpy()
         preds_class = preds_class.detach().cpu().numpy()
