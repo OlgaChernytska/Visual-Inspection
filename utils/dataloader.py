@@ -23,6 +23,7 @@ class MVTEC_AD_DATASET(Dataset):
     def _get_images_and_labels(self, root):
         image_names = []
         labels = []
+        labels_detailed = []
 
         for folder in DATASET_SETS:
             folder = os.path.join(root, folder)
@@ -40,6 +41,7 @@ class MVTEC_AD_DATASET(Dataset):
 
                 image_names.extend(class_images)
                 labels.extend([label] * len(class_images))
+                #labels_detailed.extend([])
 
         print(
             "Dataset {}: N Images = {}, Share of anomalies = {:.3f}".format(

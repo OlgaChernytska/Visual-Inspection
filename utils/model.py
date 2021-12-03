@@ -50,5 +50,11 @@ class CustomVGG(nn.Module):
             feature_maps = feature_maps.unsqueeze(1).repeat((1, 2, 1, 1, 1))
             location = torch.mul(weights, feature_maps).sum(axis=2)
             location = F.interpolate(location, size=INPUT_IMG_SIZE, mode="bilinear")
+            
+            maxs, _ = location.max(dim=-1, keepdim=True)
+            maxs, _ = maxs.max(dim=-2, keepdim=True)
+            mins, _ = location.min(dim=-1, keepdim=True)
+            mins, _ = mins.min(dim=-2, keepdim=True)
+            norm_location = (location - mins) / (maxs - mins)
 
-            return probs, location
+            return probs, norm_location
