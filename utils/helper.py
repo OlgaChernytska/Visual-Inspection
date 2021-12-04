@@ -6,8 +6,13 @@ from matplotlib.patches import Rectangle
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, balanced_accuracy_score
 
+from utils.constants import NEG_CLASS
+
 
 def train(dataloader, model, optimizer, criterion, epochs, device):
+    """
+    Script to train a model. Returns trained model.
+    """
     model.to(device)
     model.train()
 
@@ -40,10 +45,14 @@ def train(dataloader, model, optimizer, criterion, epochs, device):
 
 
 def evaluate(model, dataloader, device):
+    """
+    Script to evaluate a model after training.
+    Outputs accuracy and balanced accuracy, draws confusion matrix.
+    """
     model.to(device)
     model.eval()
     class_names = dataloader.dataset.classes
-    
+
     running_corrects = 0
     y_true = np.empty(shape=(0,))
     y_pred = np.empty(shape=(0,))
@@ -66,7 +75,6 @@ def evaluate(model, dataloader, device):
 
     print("Accuracy: {:.4f}".format(accuracy))
     print("Balanced Accuracy: {:.4f}".format(balanced_accuracy))
-
     print()
     plot_confusion_matrix(y_true, y_pred, class_names=class_names)
 
@@ -88,12 +96,15 @@ def plot_confusion_matrix(y_true, y_pred, class_names="auto"):
     plt.show()
     
     
-def get_bbox_from_heatmap(heatmap, thres):
-    """Return upper left and lower right corner locations."""
+def get_bbox_from_heatmap(heatmap, thres=0.8):
+    """
+    Returns bounding box around the defected area:
+    Upper left and lower right corner.
+    
+    Threshold affects size of the bounding box.
+    The higher the threshold, the wider the bounding box.
+    """
     binary_map = heatmap > thres
-
-    if binary_map.sum() == 0:
-        return 0, 0, 0, 0
 
     x_dim = np.max(binary_map, axis=0) * np.arange(0, binary_map.shape[1])
     x_0 = int(x_dim[x_dim > 0].min())
@@ -106,7 +117,12 @@ def get_bbox_from_heatmap(heatmap, thres):
     return x_0, y_0, x_1, y_1
 
 
-def predict_localize(model, dataloader, device, thres, neg_class=1, n_samples=9):
+def predict_localize(model, dataloader, device, thres=0.8, n_samples=9):
+    """
+    Runs predictions for the samples in the dataloader.
+    Shows image, its true label, predicted label and probability.
+    If an anomaly is predicted, draws bbox around defected region and heatmap.
+    """
     model.to(device)
     model.eval()
 
@@ -129,7 +145,7 @@ def predict_localize(model, dataloader, device, thres, neg_class=1, n_samples=9)
             class_pred = class_preds[img_i]
             prob = probs[img_i]
             label = labels[img_i]
-            heatmap = feature_maps[img_i][neg_class].detach().numpy()
+            heatmap = feature_maps[img_i][NEG_CLASS].detach().numpy()
 
             counter += 1
             plt.subplot(n_rows, n_cols, counter)
@@ -141,7 +157,7 @@ def predict_localize(model, dataloader, device, thres, neg_class=1, n_samples=9)
                 )
             )
 
-            if class_pred == neg_class:
+            if class_pred == NEG_CLASS:
                 x_0, y_0, x_1, y_1 = get_bbox_from_heatmap(heatmap, thres)
                 rectangle = Rectangle(
                     (x_0, y_0),
@@ -152,7 +168,6 @@ def predict_localize(model, dataloader, device, thres, neg_class=1, n_samples=9)
                     lw=3,
                 )
                 plt.gca().add_patch(rectangle)
-
                 plt.imshow(heatmap, cmap="Reds", alpha=0.3)
 
             if counter == n_samples:
