@@ -117,7 +117,9 @@ def get_bbox_from_heatmap(heatmap, thres=0.8):
     return x_0, y_0, x_1, y_1
 
 
-def predict_localize(model, dataloader, device, thres=0.8, n_samples=9):
+def predict_localize(
+    model, dataloader, device, thres=0.8, n_samples=9, show_heatmap=False
+):
     """
     Runs predictions for the samples in the dataloader.
     Shows image, its true label, predicted label and probability.
@@ -168,7 +170,8 @@ def predict_localize(model, dataloader, device, thres=0.8, n_samples=9):
                     lw=3,
                 )
                 plt.gca().add_patch(rectangle)
-                plt.imshow(heatmap, cmap="Reds", alpha=0.3)
+                if show_heatmap:
+                    plt.imshow(heatmap, cmap="Reds", alpha=0.3)
 
             if counter == n_samples:
                 plt.tight_layout()
