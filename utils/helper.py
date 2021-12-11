@@ -9,7 +9,9 @@ from sklearn.metrics import confusion_matrix, accuracy_score, balanced_accuracy_
 from utils.constants import NEG_CLASS
 
 
-def train(dataloader, model, optimizer, criterion, epochs, device):
+def train(
+    dataloader, model, optimizer, criterion, epochs, device, target_accuracy=None
+):
     """
     Script to train a model. Returns trained model.
     """
@@ -40,6 +42,11 @@ def train(dataloader, model, optimizer, criterion, epochs, device):
         epoch_loss = running_loss / n_samples
         epoch_acc = running_corrects.double() / n_samples
         print("Loss = {:.4f}, Accuracy = {:.4f}".format(epoch_loss, epoch_acc))
+
+        if target_accuracy != None:
+            if epoch_acc > target_accuracy:
+                print("Early Stopping")
+                break
 
     return model
 
