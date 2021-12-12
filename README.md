@@ -50,11 +50,11 @@ Evaluation was performed on 5 subsets from the MVTEC Anomaly Detection Dataset -
 
 | Subset Name | N Images (Train / Test) | Test Set Accuracy | Test Set Balanced Accuracy | Test Set Confusion Matrix |
 | --- | --- | --- | --- | --- |
-| Hazelnut | 401 / 100 | 97.0% | 95.3% | TP=85, FN=2, FP=1, TN=13 |
-| Leather | 295 / 74 | 96.0% | 92.1% | TP=55, FN=0, FP=3, TN=16 |
-| Cable | 299 / 75 | 94.7% | 88.9% | TP=57, FN=0, FP=4, TN=14 |
-| Toothbrush | 82 / 20 | 90.5% | 83.3% | TP=15, FN=0, FP=2, TN=4 |
-| Pill | 347 / 87 | 82.8% | 81.7% | TP=50, FN=9, FP=6, TN=22 |
+| Hazelnut | 401 / 100 | 97.0% | 95.3% | TP=85, FN=2, <br /> FP=1, TN=13 |
+| Leather | 295 / 74 | 96.0% | 92.1% | TP=55, FN=0, <br /> FP=3, TN=16 |
+| Cable | 299 / 75 | 94.7% | 88.9% | TP=57, FN=0, <br /> FP=4, TN=14 |
+| Toothbrush | 82 / 20 | 90.5% | 83.3% | TP=15, FN=0, <br /> FP=2, TN=4 |
+| Pill | 347 / 87 | 82.8% | 81.7% | TP=50, FN=9, <br /> FP=6, TN=22 |
 
 <br><br>
 *Hazelnut: Prediction on Test Set*
