@@ -1,10 +1,10 @@
 # Visual-Inspection
 
 
-PyTorch Pipeline to train a model that classifies images as 'Good'/'Anomaly'. Trained without any labels for defective regions, model in the inference mode is able to predict a bounding box for a defective region in the image. This is achieved by processing feature maps of the deep convolutional layers. 
+PyTorch Pipeline to train a model that classifies images as 'Good' / 'Anomaly'. Trained without any labels for defective regions, model in the inference mode is able to predict a bounding box for a defective region in the image. This is achieved by processing feature maps of the deep convolutional layers. For more details, check my post [Explainable Defect Detection using Convolutional Neural Networks: Case Study](todo).
 
-For more details, check my post [Explainable Defect Detection using Convolutional Neural Networks: Case Stud](todo).
-
+*Model predicts class 'Good' / 'Anomaly' and localizes a defect region for an 'Anomaly' class:*
+![model_general](docs/model_general.png)
 
 
 
