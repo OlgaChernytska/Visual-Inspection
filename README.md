@@ -37,7 +37,7 @@ For each input image, model returns a single heatmap. High values in the heatmap
 
 ## Data
 
- - Open-source dataset used - [MVTEC Anomaly Detection Dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad).
+ - Dataset used - [MVTEC Anomaly Detection Dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad). Thid dataset is released under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) License (CC BY-NC-SA 4.0), which means it is not allowed to use it for commertial purposes.
  - Images resized to 224x224.
  - Train/Test split - 80/20 in stratified manner by defect types.
 
@@ -81,3 +81,17 @@ Evaluation was performed on 5 subsets from the MVTEC Anomaly Detection Dataset -
 - ```utils/helper.py``` - other functions used in the project
 - ```utils/constants.py``` - constants used in the project
 - ```weights/``` - folder with trained models
+
+
+## References
+
+Zhou, Bolei, Aditya Khosla, Agata Lapedriza, Aude Oliva, and Antonio Torralba: Learning deep features for discriminative localization; in: Proceedings of the IEEE conference on computer vision and pattern recognition, 2016. [pdf](https://arxiv.org/pdf/1512.04150.pdf)
+
+Paul Bergmann, Kilian Batzner, Michael Fauser, David Sattlegger, Carsten Steger: The MVTec Anomaly Detection Dataset: A Comprehensive Real-World Dataset for Unsupervised Anomaly Detection; in: International Journal of Computer Vision, January 2021. [pdf](https://link.springer.com/content/pdf/10.1007/s11263-020-01400-4.pdf)
+
+Paul Bergmann, Michael Fauser, David Sattlegger, Carsten Steger: MVTec AD – A Comprehensive Real-World Dataset for Unsupervised Anomaly Detection;
+in: IEEE Conference on Computer Vision and Pattern Recognition (CVPR), June 2019. [pdf](https://www.mvtec.com/fileadmin/Redaktion/mvtec.com/company/research/datasets/mvtec_ad.pdf)
+
+
+## License
+This project is licensed under the terms of the [MIT license](https://choosealicense.com/licenses/mit/).
